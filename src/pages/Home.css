@@ -1,0 +1,15 @@
+/* src/pages/Home.css */
+.home-container {
+  padding: 20px;
+}
+
+.games-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.loading {
+  font-size: 18px;
+  text-align: center;
+}
