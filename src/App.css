@@ -1,1 +1,25 @@
+:root {
+  /* Paleta extraída de tu imagen */
+  --bg-main: #FDF8F0;      /* El color crema de fondo */
+  --bg-card: #FFFFFF;      /* Fondo de tarjetas */
+  --text-main: #1A1A1A;    /* Negro casi puro */
+  --accent-yellow: #FBC02D; /* Amarillo del logo/decoración */
+  --accent-blue: #90CAF9;   /* Azul de las tarjetas */
+  --accent-pink: #F48FB1;   /* Rosa de etiquetas */
+  
+  /* Estilos base */
+  --border-style: 2px solid #000000;
+  --shadow-style: 4px 4px 0px #000000; /* Sombra dura característica */
+  --radius: 16px;
+}
 
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif; /* Fuente cuerpo */
+}
+
+h1, h2, h3, .logo {
+  font-family: 'Merriweather', serif; /* Fuente títulos estilo retro */
+  font-weight: 900;
+}
