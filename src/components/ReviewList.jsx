@@ -1,24 +1,23 @@
-// components/ReviewList.jsx
-import { useEffect, useState } from "react";
-
-export default function ReviewList({ gameId }) {
-  const [reviews, setReviews] = useState([]);
-
-  const load = async () => {
-    const res = await fetch(`http://localhost:3000/reviews/${gameId}`);
-    setReviews(await res.json());
-  };
-
-  useEffect(() => {
-    load();
-  }, []);
-
+export default function ReviewList({ reseñas = [] }) {
   return (
     <div>
-      <h3>Reseñas</h3>
-      {reviews.map((r) => (
-        <div key={r._id} style={{ marginBottom: "12px" }}>
-          <p><strong>{r.autor}:</strong> {r.texto}</p>
+      <h3>Reseñas:</h3>
+
+      {reseñas.length === 0 && <p>No hay reseñas todavía.</p>}
+
+      {reseñas.map((r, i) => (
+        <div
+          key={i}
+          style={{
+            background: "#eee",
+            padding: "10px",
+            borderRadius: "8px",
+            marginBottom: "10px",
+          }}
+        >
+          <p>{"⭐".repeat(r.puntuacion)}</p>
+          <p>{r.comentario}</p>
+          <small>{r.autor}</small>
         </div>
       ))}
     </div>

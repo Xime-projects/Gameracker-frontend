@@ -1,30 +1,42 @@
-// components/ReviewForm.jsx
 import { useState } from "react";
 
-export default function ReviewForm({ gameId }) {
-  const [form, setForm] = useState({ autor: "", texto: "" });
+export default function ReviewForm({ gameId, onSubmit }) {
+  const [texto, setTexto] = useState("");
+  const [stars, setStars] = useState(5);
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if (!texto.trim()) return;
 
-    await fetch("http://localhost:3000/reviews", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, gameId }),
+    onSubmit({
+      juego: gameId,
+      comentario: texto,
+      puntuacion: stars,
+      autor: "Usuario GameTracker",
     });
 
-    alert("Reseña agregada");
+    setTexto("");
+    setStars(5);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="autor" placeholder="Tu nombre" onChange={handleChange} required />
-      <textarea name="texto" placeholder="Escribe tu reseña" onChange={handleChange} required />
+    <form onSubmit={handleSubmit} style={{ marginTop: "15px" }}>
+      <select value={stars} onChange={(e) => setStars(Number(e.target.value))}>
+        <option value={5}>⭐⭐⭐⭐⭐</option>
+        <option value={4}>⭐⭐⭐⭐</option>
+        <option value={3}>⭐⭐⭐</option>
+        <option value={2}>⭐⭐</option>
+        <option value={1}>⭐</option>
+      </select>
 
-      <button type="submit">Enviar</button>
+      <textarea
+        placeholder="Escribe una reseña..."
+        value={texto}
+        onChange={(e) => setTexto(e.target.value)}
+        style={{ width: "100%", padding: "10px", minHeight: "80px" }}
+      />
+
+      <button style={{ marginTop: "10px" }}>Publicar</button>
     </form>
   );
 }
