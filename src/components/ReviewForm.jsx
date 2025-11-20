@@ -1,34 +1,22 @@
+// src/components/ReviewForm.jsx
 import { useState } from "react";
 
 export default function ReviewForm({ gameId, onSubmit }) {
   const [texto, setTexto] = useState("");
-  const [stars, setStars] = useState(5);
+  const [estrellas, setEstrellas] = useState(0);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!texto.trim()) return;
 
-    onSubmit({
-      juego: gameId,
-      comentario: texto,
-      puntuacion: stars,
-      autor: "Usuario GameTracker",
-    });
+    onSubmit({ texto, estrellas, gameId });
 
     setTexto("");
-    setStars(5);
+    setEstrellas(0);
   };
 
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: "15px" }}>
-      <select value={stars} onChange={(e) => setStars(Number(e.target.value))}>
-        <option value={5}>⭐⭐⭐⭐⭐</option>
-        <option value={4}>⭐⭐⭐⭐</option>
-        <option value={3}>⭐⭐⭐</option>
-        <option value={2}>⭐⭐</option>
-        <option value={1}>⭐</option>
-      </select>
-
       <textarea
         placeholder="Escribe una reseña..."
         value={texto}
@@ -36,7 +24,28 @@ export default function ReviewForm({ gameId, onSubmit }) {
         style={{ width: "100%", padding: "10px", minHeight: "80px" }}
       />
 
+      <div style={{ margin: "10px 0" }}>
+        <strong>Calificación:</strong>
+        <div>
+          {[1, 2, 3, 4, 5].map((n) => (
+            <span
+              key={n}
+              onClick={() => setEstrellas(n)}
+              style={{
+                cursor: "pointer",
+                fontSize: "25px",
+                color: n <= estrellas ? "#ff9800" : "#ccc",
+                marginRight: "5px",
+              }}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+      </div>
+
       <button style={{ marginTop: "10px" }}>Publicar</button>
     </form>
   );
 }
+
