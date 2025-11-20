@@ -57,7 +57,7 @@ function App() {
             <div
               key={juego._id}
               style={{
-                background: "#fff",
+                background: "#ffffffff",
                 borderRadius: 12,
                 padding: 12,
                 boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
@@ -71,7 +71,7 @@ function App() {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   onError={(e) => {
                     e.currentTarget.src =
-                      "https://via.placeholder.com/400x225?text=No+Image";
+                      "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg";
                   }}
                 />
               </div>
