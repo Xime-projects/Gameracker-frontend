@@ -1,0 +1,12 @@
+.game-card{ 
+    display:flex; 
+    gap:12px; 
+    padding:12px; 
+    background:white; 
+    border-radius:8px; 
+    box-shadow:0 2px 8px rgba(0,0,0,0.06); 
+    align-items:center; }
+
+.game-card img{ width:90px; height:90px; object-fit:cover; border-radius:6px; }
+
+.game-card .buttons{ display:flex; gap:8px; margin-left:auto; }
