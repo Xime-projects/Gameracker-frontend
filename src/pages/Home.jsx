@@ -1,39 +1,44 @@
-
-import { useEffect, useState } from "react";
-import { getGames, updateGameStatus } from "../services/gamesAPI";
+import React, { useEffect, useState } from "react";
 import GameCard from "../components/GameCard";
-import "./Home.css";
+import GameModal from "../components/GameModal";
+import { getGames } from "../services/gamesAPI";
 
-export default function Home() {
+const Home = () => {
   const [games, setGames] = useState([]);
+  const [selectedGame, setSelectedGame] = useState(null);
 
-  const loadGames = async () => {
+  const fetchData = async () => {
     const data = await getGames();
     setGames(data);
   };
 
-  const toggleEstado = async (id, estado) => {
-    await updateGameStatus(id, estado);
-    loadGames();
-  };
-
   useEffect(() => {
-    loadGames();
+    fetchData();
   }, []);
 
   return (
     <div className="home-container">
-      <h1>📚 Mi Biblioteca de Juegos</h1>
+      <h1>Biblioteca de Juegos</h1>
 
-      <div className="game-grid">
+      <div className="games-grid">
         {games.map((game) => (
           <GameCard
             key={game._id}
             game={game}
-            onEstadoChange={toggleEstado}
+            onSelect={() => setSelectedGame(game)}
           />
         ))}
       </div>
+
+      {selectedGame && (
+        <GameModal
+          game={selectedGame}
+          onClose={() => setSelectedGame(null)}
+          refresh={fetchData}
+        />
+      )}
     </div>
   );
-}
+};
+
+export default Home;

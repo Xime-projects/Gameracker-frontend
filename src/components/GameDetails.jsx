@@ -1,4 +1,3 @@
-// src/components/GameDetails.jsx
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
 

@@ -1,4 +1,4 @@
-// pages/AddGame.jsx
+
 import GameForm from "../components/GameForm";
 
 export default function AddGame() {
