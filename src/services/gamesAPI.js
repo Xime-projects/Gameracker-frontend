@@ -1,70 +1,75 @@
-const API_URL = "http://localhost:3000/api/games";
+const API_URL = "http://localhost:3000/games";
 
-/* -------------------- JUEGOS -------------------- */
+// Obtener juegos con paginación + filtros + orden
+export const getGames = async (page = 1, limit = 8, sort = "nombre", search = "", estado = "") => {
+  const url = `${API_URL}?page=${page}&limit=${limit}&sort=${sort}&search=${search}&estado=${estado}`;
 
-// Obtener todos los juegos
-export const getGames = async () => {
-  const res = await fetch(API_URL);
-  return res.json();
+  const res = await fetch(url);
+  return await res.json(); // <-- debe devolver: { games: [], totalPages: X }
 };
 
-// Obtener un juego por ID (para editar)
-export const getGameById = async (id) => {
-  const res = await fetch(`${API_URL}/${id}`);
-  return res.json();
-};
-
-// Crear juego
-export const createGame = async (game) => {
+// Crear un juego
+export const createGame = async (gameData) => {
   const res = await fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(game),
+    body: JSON.stringify(gameData)
   });
-  return res.json();
+  return await res.json();
 };
 
 // Editar juego
-export const updateGame = async (id, game) => {
+export const updateGame = async (id, gameData) => {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(game),
+    body: JSON.stringify(gameData)
   });
-  return res.json();
+  return await res.json();
+};
+
+// Cambiar solo el estado
+export const updateGameStatus = async (id, estado) => {
+  const res = await fetch(`${API_URL}/${id}/estado`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ estado })
+  });
+  return await res.json();
 };
 
 // Eliminar juego
 export const deleteGame = async (id) => {
-  const res = await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
-  });
-  return res.json();
+  const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+  return await res.json();
 };
 
-/* -------------------- RESEÑAS -------------------- */
+/* ---------------------- RESEÑAS -------------------------- */
 
-export const addReview = async (gameId, review) => {
+export const getReviewsByGame = async (gameId) => {
+  const res = await fetch(`${API_URL}/${gameId}/reviews`);
+  return await res.json();
+};
+
+export const createReview = async (gameId, reviewData) => {
   const res = await fetch(`${API_URL}/${gameId}/reviews`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(review),
+    body: JSON.stringify(reviewData)
   });
-  return res.json();
+  return await res.json();
 };
 
-export const editReview = async (gameId, reviewId, review) => {
-  const res = await fetch(`${API_URL}/${gameId}/reviews/${reviewId}`, {
+export const updateReview = async (reviewId, reviewData) => {
+  const res = await fetch(`${API_URL}/reviews/${reviewId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(review),
+    body: JSON.stringify(reviewData)
   });
-  return res.json();
+  return await res.json();
 };
 
-export const deleteReview = async (gameId, reviewId) => {
-  const res = await fetch(`${API_URL}/${gameId}/reviews/${reviewId}`, {
-    method: "DELETE",
-  });
-  return res.json();
+export const deleteReview = async (reviewId) => {
+  const res = await fetch(`${API_URL}/reviews/${reviewId}`, { method: "DELETE" });
+  return await res.json();
 };

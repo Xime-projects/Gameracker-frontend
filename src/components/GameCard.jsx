@@ -1,50 +1,50 @@
-import ReviewList from "./ReviewList";
-import ReviewForm from "./ReviewForm";
-import { updateGameStatus, createReview, updateReview, removeReview } from "../services/gamesAPI";
+import { useState } from "react";
+import Modal from "react-modal";
+import GameForm from "./GameForm";
+import { deleteGame } from "../services/gamesAPI";
+import "./GameCard.css";
+
+Modal.setAppElement("#root");
 
 export default function GameCard({ game, reload }) {
+  const [open, setOpen] = useState(false);
 
-  const cambiarEstado = async () => {
-    const nuevo = game.estado === "pendiente" ? "jugando" : "completado";
-    await updateGameStatus(game._id, nuevo);
-    reload();
-  };
-
-  const addReview = async (review) => {
-    await createReview(game._id, review);
-    reload();
-  };
-
-  const editReview = async (reviewId, texto) => {
-    await updateReview(game._id, reviewId, texto);
-    reload();
-  };
-
-  const deleteReview = async (reviewId) => {
-    await removeReview(game._id, reviewId);
-    reload();
+  const handleDelete = async () => {
+    if (confirm("¿Eliminar este juego?")) {
+      await deleteGame(game._id);
+      reload();
+    }
   };
 
   return (
     <div className="game-card">
-      <img src={game.portada} alt={game.titulo} className="game-img" />
+      <img src={game.portada} alt={game.nombre} />
 
-      <h3>{game.titulo}</h3>
-      <p>Plataforma: {game.plataforma}</p>
-      <p>Estado: {game.estado}</p>
+      <h3>{game.nombre}</h3>
+      <p>🎮 {game.plataforma}</p>
+      <p>📊 Estado: {game.estado}</p>
+      <p>⏳ Horas: {game.horasJugadas}</p>
 
-      <button onClick={cambiarEstado}>Cambiar Estado</button>
+      <div className="buttons">
+        <button onClick={() => setOpen(true)}>✏ Editar</button>
+        <button onClick={handleDelete} className="delete">
+          🗑 Eliminar
+        </button>
+      </div>
 
-      <ReviewList
-        reseñas={game.reseñas || []}
-        onEditReview={editReview}
-        onDeleteReview={deleteReview}
-      />
-
-      <ReviewForm onSubmit={addReview} />
+      {/* MODAL */}
+      <Modal isOpen={open} onRequestClose={() => setOpen(false)}>
+        <GameForm
+          editMode={true}
+          initialData={game}
+          onComplete={() => {
+            reload();
+            setOpen(false);
+          }}
+        />
+      </Modal>
     </div>
   );
 }
-
 
   //https://static.thenounproject.com/png/1554489-200.png // Imagen por defecto si no hay portada*/

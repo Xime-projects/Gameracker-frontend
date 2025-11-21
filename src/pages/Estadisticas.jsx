@@ -1,28 +1,42 @@
-// pages/Estadisticas.jsx
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getGames } from "../services/gamesAPI";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-export default function Estadisticas() {
-  const [stats, setStats] = useState({ total: 0, completados: 0 });
+export default function Estadisticas(){
+  const [games, setGames] = useState([]);
 
-  const loadStats = async () => {
-    const data = await getGames();
-    const total = data.length;
-    const completados = data.filter(g => g.estado === "completado").length;
+  useEffect(()=>{ (async ()=>{ try{ const data = await getGames(1,1000); // cargar todo para estadisticas
+    setGames(data.games || data);
+  }catch(e){console.error(e);} })(); }, []);
 
-    setStats({ total, completados });
-  };
+  const grouped = ["Jugando","Completado","Pendiente","Abandonado"].map(status => ({
+    estado: status,
+    count: (games || []).filter(g => g.estado === status).length
+  }));
 
-  useEffect(() => {
-    loadStats();
-  }, []);
+  const hours = (games || [])
+    .map(g => ({ name: g.nombre, horas: g.horasJugadas || 0 }))
+    .sort((a,b)=>b.horas - a.horas)
+    .slice(0,10);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>📊 Estadísticas Personales</h1>
+    <div className="container">
+      <h3>Estadísticas</h3>
+      <div style={{height:300}}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={grouped}>
+            <XAxis dataKey="estado" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="count" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
 
-      <p>Total de juegos: <strong>{stats.total}</strong></p>
-      <p>Juegos completados: <strong>{stats.completados}</strong></p>
+      <h4>Top horas jugadas</h4>
+      <div>
+        {hours.map(h => <div key={h.name}>{h.name} — {h.horas} hrs</div>)}
+      </div>
     </div>
   );
 }

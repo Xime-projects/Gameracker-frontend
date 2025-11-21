@@ -1,64 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Modal from "react-modal";
+import ReviewForm from "./ReviewForm";
+import { getReviewsByGame, deleteReview } from "../services/gamesAPI";
 
-export default function ReviewList({ reseñas, onEditReview, onDeleteReview }) {
-  const [editIndex, setEditIndex] = useState(null);
-  const [nuevoTexto, setNuevoTexto] = useState("");
+Modal.setAppElement("#root");
 
-  const startEditing = (index, actualTexto) => {
-    setEditIndex(index);
-    setNuevoTexto(actualTexto);
+export default function ReviewList({ gameId }) {
+  const [reviews, setReviews] = useState([]);
+  const [editing, setEditing] = useState(null);
+
+  const loadReviews = async () => {
+    const data = await getReviewsByGame(gameId);
+    setReviews(data);
   };
 
-  const saveEdit = (index) => {
-    onEditReview(index, nuevoTexto);
-    setEditIndex(null);
-    setNuevoTexto("");
+  const handleDelete = async (id) => {
+    if (confirm("¿Eliminar reseña?")) {
+      await deleteReview(id);
+      loadReviews();
+    }
   };
+
+  useEffect(() => {
+    loadReviews();
+  }, []);
 
   return (
-    <div>
-      {reseñas.length === 0 && <p>No hay reseñas todavía.</p>}
+    <div className="review-container">
+      <h2>Reseñas</h2>
 
-      {reseñas.map((r, i) => (
-        <div
-          key={i}
-          style={{
-            background: "#f3f3f3",
-            padding: "12px",
-            borderRadius: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          {editIndex === i ? (
-            <>
-              <textarea
-                value={nuevoTexto}
-                onChange={(e) => setNuevoTexto(e.target.value)}
-                style={{ width: "100%", marginBottom: "8px" }}
-              />
+      {reviews.map((r) => (
+        <div key={r._id} className="review-card">
+          <p>⭐ {r.puntuacion}</p>
+          <p>{r.comentario}</p>
+          <p className="author">👤 {r.autor}</p>
 
-              <button onClick={() => saveEdit(i)}>Guardar</button>
-              <button onClick={() => setEditIndex(null)} style={{ marginLeft: "10px" }}>
-                Cancelar
-              </button>
-            </>
-          ) : (
-            <>
-              <p>{r.texto}</p>
-              <p style={{ color: "#ff9800" }}>⭐ {r.estrellas}/5</p>
-
-              <button onClick={() => startEditing(i, r.texto)}>Editar</button>
-              <button
-                onClick={() => onDeleteReview(i)}
-                style={{ marginLeft: "10px", color: "red" }}
-              >
-                Eliminar
-              </button>
-            </>
-          )}
+          <button onClick={() => setEditing(r)}>✏ Editar</button>
+          <button onClick={() => handleDelete(r._id)}>🗑 Eliminar</button>
         </div>
       ))}
+
+      {/* MODAL */}
+      <Modal isOpen={!!editing} onRequestClose={() => setEditing(null)}>
+        <ReviewForm
+          editMode={true}
+          initialData={editing}
+          onComplete={() => {
+            loadReviews();
+            setEditing(null);
+          }}
+        />
+      </Modal>
     </div>
   );
 }
-
