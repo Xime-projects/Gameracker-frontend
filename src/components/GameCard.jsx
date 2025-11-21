@@ -1,13 +1,16 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import GameForm from "./GameForm";
+import ReviewList from "./ReviewList";
+import ReviewForm from "./ReviewForm";   
 import { deleteGame } from "../services/gamesAPI";
 import "./GameCard.css";
 
 Modal.setAppElement("#root");
 
 export default function GameCard({ game, reload }) {
-  const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openReviews, setOpenReviews] = useState(false);
 
   const handleDelete = async () => {
     if (confirm("¿Eliminar este juego?")) {
@@ -26,25 +29,47 @@ export default function GameCard({ game, reload }) {
       <p>⏳ Horas: {game.horasJugadas}</p>
 
       <div className="buttons">
-        <button onClick={() => setOpen(true)}>✏ Editar</button>
-        <button onClick={handleDelete} className="delete">
-          🗑 Eliminar
+        <button onClick={() => setOpenEdit(true)}>✏ Editar</button>
+        <button onClick={handleDelete} className="delete">🗑 Eliminar</button>
+        <button onClick={() => setOpenReviews(true)} className="reviews-btn">
+          ✨ Reseñas
         </button>
       </div>
 
-      {/* MODAL */}
-      <Modal isOpen={open} onRequestClose={() => setOpen(false)}>
+      {/* MODAL — EDITAR JUEGO */}
+      <Modal isOpen={openEdit} onRequestClose={() => setOpenEdit(false)}>
         <GameForm
           editMode={true}
           initialData={game}
           onComplete={() => {
             reload();
-            setOpen(false);
+            setOpenEdit(false);
+          }}
+        />
+      </Modal>
+
+      {/* MODAL — RESEÑAS */}
+      <Modal isOpen={openReviews} onRequestClose={() => setOpenReviews(false)}>
+
+        <h2>Reseñas de {game.nombre}</h2>
+
+        {/* ⭐ Promedio + Contador */}
+        <ReviewList gameId={game._id} />
+
+        <hr />
+
+        {/* Formulario para crear reseña */}
+        <ReviewForm
+          gameId={game._id}
+          onComplete={() => {
+            reload();
           }}
         />
       </Modal>
     </div>
   );
 }
+
+
 
   //https://static.thenounproject.com/png/1554489-200.png // Imagen por defecto si no hay portada*/

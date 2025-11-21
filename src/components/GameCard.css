@@ -34,3 +34,25 @@ button {
 button:hover {
   background: #3a7bd5;
 }
+
+.game-card-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.game-card-description {
+  font-size: 14px;
+  color: #cccccc;
+  margin: 6px 0;
+}
+
+.reviews-btn {
+  background-color: #4b6bff;
+  color: white;
+  margin-left: 5px;
+}
+.reviews-btn:hover {
+  background-color: #3a54d1;
+}
+
