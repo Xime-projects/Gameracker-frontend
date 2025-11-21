@@ -16,23 +16,35 @@ export default function ReviewForm({ initialData = null, gameId = null, onComple
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!comentario.trim()) return alert("El comentario no puede estar vacío");
 
-    const payload = { puntuacion, comentario, autor: (initialData && initialData.autor) || "Usuario GameTracker" };
+    if (!gameId) return alert("ID del juego no válido");
+
+    const payload = {
+      puntuacion,
+      comentario,
+      autor: (initialData && initialData.autor) || "Usuario GameTracker",
+      juego: gameId
+    };
+
     setSaving(true);
     try {
       if (initialData && initialData._id) {
         await updateReview(initialData._id, payload);
       } else {
-        // Si no viene initialData, creamos reseña ligada a gameId
-        await createReview({ ...payload, juego: gameId });
+        const response = await createReview(payload);
+        console.log("Review creada:", response);
       }
-      onComplete && onComplete();
+
+      onComplete && onComplete(); // recarga la lista de reviews
     } catch (err) {
-      console.error(err);
-      alert("Error guardando reseña");
+      console.error("Error guardando reseña:", err);
+      alert("Error guardando reseña. Revisa consola.");
     } finally {
       setSaving(false);
+      setComentario("");
+      setPuntuacion(5);
     }
   };
 
@@ -49,9 +61,14 @@ export default function ReviewForm({ initialData = null, gameId = null, onComple
       </label>
 
       <div className="form-actions">
-        <button type="submit" className="btn" disabled={saving}>{saving ? 'Guardando...' : 'Enviar'}</button>
-        <button type="button" className="btn btn-danger" onClick={() => onComplete && onComplete(false)}>Cancelar</button>
+        <button type="submit" className="btn" disabled={saving}>
+          {saving ? "Guardando..." : "Enviar"}
+        </button>
+        <button type="button" className="btn btn-danger" onClick={() => onComplete && onComplete(false)}>
+          Cancelar
+        </button>
       </div>
     </form>
   );
 }
+

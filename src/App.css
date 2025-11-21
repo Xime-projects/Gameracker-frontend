@@ -25,3 +25,7 @@ input, select, textarea {
   border:1px solid #ddd; 
   width:100%; 
   box-sizing:border-box; }
+
+h1, h2, h3, h4, h5, h6 { 
+  color:#0b1220; 
+  margin-top:0; }

@@ -4,6 +4,8 @@ import AddGame from "./pages/AddGame";
 import Estadisticas from "./pages/Estadisticas";
 import Navbar from "./components/Navbar";
 
+
+
 export default function App() {
   return (
     <BrowserRouter>
